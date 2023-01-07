@@ -6,18 +6,20 @@ import { Authorization } from "./components/Authorization/Authorization";
 import { Registration } from "./components/Registration/Registration";
 import { Header } from "./components/Header/Header";
 
-function App() {
+function App(props) {
   return (
     <BrowserRouter>
-      <div className="App"> 
-      <Header/>
+      <div className="App">
+        <Header />
         <div className="App-content">
           <Routes>
             <Route
               path="/registration"
               element={
                 <Registration
-
+                  usersEmails={props.state.usersEmails}
+                  dispatch={props.dispatch}
+                  state={props.state}
                 />
               }
             />
@@ -25,9 +27,9 @@ function App() {
               path="/authorization"
               element={
                 <Authorization
-                  // dialogsData={props.state.dialogsPage.dialogsData}
-                  // messageData={props.state.dialogsPage.messageData}
-                  // newMessageBody={props.state.dialogsPage.newMessageBody}
+                // dialogsData={props.state.dialogsPage.dialogsData}
+                // messageData={props.state.dialogsPage.messageData}
+                // newMessageBody={props.state.dialogsPage.newMessageBody}
                 />
               }
             />
@@ -35,9 +37,9 @@ function App() {
               path="/profile"
               element={
                 <Profile
-                  // dialogsData={props.state.dialogsPage.dialogsData}
-                  // messageData={props.state.dialogsPage.messageData}
-                  // newMessageBody={props.state.dialogsPage.newMessageBody}
+                // dialogsData={props.state.dialogsPage.dialogsData}
+                // messageData={props.state.dialogsPage.messageData}
+                // newMessageBody={props.state.dialogsPage.newMessageBody}
                 />
               }
             />
