@@ -1,74 +1,82 @@
-import React from "react";
-import {
-  sendEmailCreator,
-  updateNewEmailBodyCreator,
-} from "../redux/registration-reducer";
-import { Email } from "./emails/email";
+import React, { useEffect, useState } from "react";
 import styles from "./Registration.module.css";
 
-export const Registration = (props) => {
-  // debugger
+export function Registration() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [emailDirty, setEmailDirty] = useState(false);
+  const [passwordDirty, setPasswordDirty] = useState(false);
+  const [emailError, setEmailError] = useState("Почта не может быть пустой");
+  const [passwordError, setPasswordError] = useState(
+    "Пароль не может быть пустым"
+  );
+  const [formValid, setFromValid] = useState(false);
 
-  const newUsersNameElement = React.createRef();
-  const newEmailElement = React.createRef();
-  const newPasswordElement = React.createRef();
-  // const newRepeatPasswordElement = React.createRef();
+  useEffect(() => {
+    if (emailError || passwordError) {
+      setFromValid(false);
+    } else {
+      setFromValid(true);
+    }
+  }, [emailError, passwordError]);
 
-  const addPost = () => {
-    props.dispatch(sendEmailCreator());
+  const emailHandler = (e) => {
+    setEmail(e.target.value);
+    const validated = /.+\@.+\..+/;
+    if (!validated.test(e.target.value)) {
+      setEmailError("Некорретный емайл");
+    } else {
+      setEmailError("");
+    }
+  };
+  const passwordHandler = (e) => {
+    setPassword(e.target.value);
+    if (e.target.value && e.target.value.length < 4) {
+      setPasswordError("Пароль должен быть длиннее 4 символом");
+    } else if (e.target.value) {
+      setPasswordError("");
+    }
   };
 
-  const emailElements = props.usersEmails.map((post) => (
-    <Email
-      id={post.id}
-      email={post.email}
-      password={post.password}
-      user={post.user}
-    />
-  ));
-
-  const onPostChange = () => {
-    const user = newUsersNameElement.current.value;
-    const email = newEmailElement.current.value;
-    const password = newPasswordElement.current.value;
-
-    let action = updateNewEmailBodyCreator(user, email, password);
-    // let action = updateNewEmailBodyCreator( email);
-    // console.log(action);
-    props.dispatch(action);
+  const blurHandler = (e) => {
+    switch (e.target.name) {
+      case "email":
+        setEmailDirty(true);
+        break;
+      case "password":
+        setPasswordDirty(true);
+        break;
+    }
   };
 
   return (
-    <div className={styles.registration}>
-      <input
-        type="text"
-        placeholder="Name"
-        ref={newUsersNameElement}
-        value={props.state.newUser}
-        onChange={onPostChange}
-      />
-      <br />
-      <input
-        type="text"
-        placeholder="e-mail"
-        ref={newEmailElement}
-        value={props.state.newEmail}
-        onChange={onPostChange}
-      />
-      <br />
-      <input
-        type="text"
-        placeholder="password"
-        ref={newPasswordElement}
-        value={props.state.newPassword}
-        onChange={onPostChange}
-      />
-      <br />
-      {/* <input type="text" placeholder="repeat password" ref={newRepeatPasswordElement} value={newRepeatPasswordElement}/>
-      <br />  */}
-      <button onClick={addPost}>Send</button>
-
-      <div className={styles.posts}>{emailElements}</div>
+    <div className="App">
+      <form>
+        <h1>Registration</h1>
+        {emailDirty && emailError && (
+          <div style={{ color: "red" }}>{emailError}</div>
+        )}
+        <input
+          value={email}
+          onChange={(e) => emailHandler(e)}
+          onBlur={(e) => blurHandler(e)}
+          name="email"
+          type="text"
+          placeholder="Enter your email"
+        />
+        {passwordDirty && passwordError && (
+          <div style={{ color: "red" }}>{passwordError}</div>
+        )}
+        <input
+          value={password}
+          onChange={(e) => passwordHandler(e)}
+          onBlur={(e) => blurHandler(e)}
+          name="password"
+          type="password"
+          placeholder="Enter your password"
+        />
+        <input type="submit" value="Send" disabled={!formValid} />
+      </form>
     </div>
   );
-};
+}

@@ -13,36 +13,9 @@ function App(props) {
         <Header />
         <div className="App-content">
           <Routes>
-            <Route
-              path="/registration"
-              element={
-                <Registration
-                  usersEmails={props.state.usersEmails}
-                  dispatch={props.dispatch}
-                  state={props.state}
-                />
-              }
-            />
-            <Route
-              path="/authorization"
-              element={
-                <Authorization
-                // dialogsData={props.state.dialogsPage.dialogsData}
-                // messageData={props.state.dialogsPage.messageData}
-                // newMessageBody={props.state.dialogsPage.newMessageBody}
-                />
-              }
-            />
-            <Route
-              path="/profile"
-              element={
-                <Profile
-                // dialogsData={props.state.dialogsPage.dialogsData}
-                // messageData={props.state.dialogsPage.messageData}
-                // newMessageBody={props.state.dialogsPage.newMessageBody}
-                />
-              }
-            />
+            <Route path="/registration" element={<Registration />} />
+            <Route path="/authorization" element={<Authorization />} />
+            <Route path="/profile" element={<Profile />} />
           </Routes>
         </div>
       </div>
