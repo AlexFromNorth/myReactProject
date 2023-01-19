@@ -20,65 +20,62 @@ export function Registration() {
     passwordCheck: false,
   });
 
-  const [textError, setTextError] = useState({
+  const [textErrors, setTextErrors] = useState({
     name: "Введите своё имя",
     email: "Почта не может быть пустой",
     password: "Пароль не может быть пустым",
     passwordCheck: "Пароль не может быть пустым",
   });
 
-  const [formValid, setFromValid] = useState(false);
+  const [isValid, setIsValid] = useState(false);
 
   useEffect(() => {
     if (
-      textError.name ||
-      textError.email ||
-      textError.password ||
-      textError.passwordCheck
+      textErrors.name ||
+      textErrors.email ||
+      textErrors.password ||
+      textErrors.passwordCheck
     ) {
-      setFromValid(false);
+      setIsValid(false);
     } else {
-      setFromValid(true);
+      setIsValid(true);
     }
   }, [
-    textError.name,
-    textError.email,
-    textError.password,
-    textError.passwordCheck,
+    textErrors.name,
+    textErrors.email,
+    textErrors.password,
+    textErrors.passwordCheck,
   ]);
 
-  //
   const handleNameChange = (e) => {
     setTextInputs({ ...textInputs, [e.target.name]: e.target.value });
-    const validated = namePattern;
     if (e.target.value && e.target.value.length <= MIN_NAME_LENGTH) {
-      setTextError({
-        ...textError,
+      setTextErrors({
+        ...textErrors,
         [e.target.name]: "Имя должно быть длиннее 2х символом",
       });
-    } else if (!validated.test(e.target.value)) {
-      setTextError({
-        ...textError,
+    } else if (!namePattern.test(e.target.value)) {
+      setTextErrors({
+        ...textErrors,
         [e.target.name]: "Необходима использовать минимум 1 букву",
       });
     } else if (e.target.value) {
-      setTextError({
-        ...textError,
+      setTextErrors({
+        ...textErrors,
         [e.target.name]: "",
       });
     }
   };
   const handlerEmailChange = (e) => {
     setTextInputs({ ...textInputs, [e.target.name]: e.target.value });
-    const validated = emailPattern;
-    if (!validated.test(e.target.value)) {
-      setTextError({
-        ...textError,
-        [e.target.name]: "Некорретный емайл",
+    if (!emailPattern.test(e.target.value)) {
+      setTextErrors({
+        ...textErrors,
+        [e.target.name]: "Некорретный email",
       });
     } else {
-      setTextError({
-        ...textError,
+      setTextErrors({
+        ...textErrors,
         [e.target.name]: "",
       });
     }
@@ -87,27 +84,27 @@ export function Registration() {
   const handlerPasswordChange = (e) => {
     setTextInputs({ ...textInputs, [e.target.name]: e.target.value });
     if (e.target.value && e.target.value.length <= MIN_PASSWORD_LENGTH) {
-      setTextError({
-        ...textError,
+      setTextErrors({
+        ...textErrors,
         [e.target.name]: "Пароль должен быть длиннее 4х символом",
       });
     } else if (e.target.value) {
-      setTextError({
-        ...textError,
+      setTextErrors({
+        ...textErrors,
         [e.target.name]: "",
       });
     }
   };
-  const passwordСheckHandler = (e) => {
+  const handlePasswordCheck = (e) => {
     setTextInputs({ ...textInputs, [e.target.name]: e.target.value });
     if (e.target.value != textInputs.password) {
-      setTextError({
-        ...textError,
+      setTextErrors({
+        ...textErrors,
         [e.target.name]: "Пароль не совпадает",
       });
     } else if (e.target.value) {
-      setTextError({
-        ...textError,
+      setTextErrors({
+        ...textErrors,
         [e.target.name]: "",
       });
     }
@@ -132,7 +129,7 @@ export function Registration() {
     }
   };
 
-  const onFormSubmit = (e) => {
+  const handleFormSubmit = (e) => {
     e.preventDefault();
 
     setTextInputs({
@@ -146,10 +143,10 @@ export function Registration() {
 
   return (
     <div className="App">
-      <form onSubmit={onFormSubmit}>
+      <form onSubmit={handleFormSubmit}>
         <h1>Registration</h1>
-        {textDirty.name && textError.name && (
-          <div style={{ color: "red" }}>{textError.name}</div>
+        {textDirty.name && textErrors.name && (
+          <div style={{ color: "red" }}>{textErrors.name}</div>
         )}
         <input
           value={textInputs.name}
@@ -157,10 +154,10 @@ export function Registration() {
           onBlur={handlerBlur}
           name="name"
           type="text"
-          placeholder="Enter your name"
+          placeholder="Введите ваше имя"
         />
-        {textDirty.email && textError.email && (
-          <div style={{ color: "red" }}>{textError.email}</div>
+        {textDirty.email && textErrors.email && (
+          <div style={{ color: "red" }}>{textErrors.email}</div>
         )}
         <input
           value={textInputs.email}
@@ -168,10 +165,10 @@ export function Registration() {
           onBlur={handlerBlur}
           name="email"
           type="text"
-          placeholder="Enter your email"
+          placeholder="Введите ваш email"
         />
-        {textDirty.password && textError.password && (
-          <div style={{ color: "red" }}>{textError.password}</div>
+        {textDirty.password && textErrors.password && (
+          <div style={{ color: "red" }}>{textErrors.password}</div>
         )}
         <input
           value={textInputs.password}
@@ -179,20 +176,20 @@ export function Registration() {
           onBlur={handlerBlur}
           name="password"
           type="password"
-          placeholder="Enter your password"
+          placeholder="Введите ваш пароль"
         />
-        {textDirty.passwordCheck && textError.passwordCheck && (
-          <div style={{ color: "red" }}>{textError.passwordCheck}</div>
+        {textDirty.passwordCheck && textErrors.passwordCheck && (
+          <div style={{ color: "red" }}>{textErrors.passwordCheck}</div>
         )}
         <input
           value={textInputs.passwordCheck}
-          onChange={passwordСheckHandler}
+          onChange={handlePasswordCheck}
           onBlur={handlerBlur}
           name="passwordCheck"
           type="password"
-          placeholder="Repeat your password"
+          placeholder="Повторите ваш пароль"
         />
-        <input type="submit" value="Send" disabled={!formValid} />
+        <input type="submit" value="Отправить" disabled={!isValid} />
       </form>
     </div>
   );
