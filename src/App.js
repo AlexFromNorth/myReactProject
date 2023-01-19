@@ -6,41 +6,16 @@ import { Authorization } from "./components/Authorization/Authorization";
 import { Registration } from "./components/Registration/Registration";
 import { Header } from "./components/Header/Header";
 
-function App() {
+function App(props) {
   return (
     <BrowserRouter>
-      <div className="App"> 
-      <Header/>
+      <div className="App">
+        <Header />
         <div className="App-content">
           <Routes>
-            <Route
-              path="/registration"
-              element={
-                <Registration
-
-                />
-              }
-            />
-            <Route
-              path="/authorization"
-              element={
-                <Authorization
-                  // dialogsData={props.state.dialogsPage.dialogsData}
-                  // messageData={props.state.dialogsPage.messageData}
-                  // newMessageBody={props.state.dialogsPage.newMessageBody}
-                />
-              }
-            />
-            <Route
-              path="/profile"
-              element={
-                <Profile
-                  // dialogsData={props.state.dialogsPage.dialogsData}
-                  // messageData={props.state.dialogsPage.messageData}
-                  // newMessageBody={props.state.dialogsPage.newMessageBody}
-                />
-              }
-            />
+            <Route path="/registration" element={<Registration />} />
+            <Route path="/authorization" element={<Authorization />} />
+            <Route path="/profile" element={<Profile />} />
           </Routes>
         </div>
       </div>
