@@ -1,134 +1,193 @@
 import React, { useEffect, useState } from "react";
-import { emailPattern } from "../../utils/patterns";
+import { emailPattern, namePattern } from "../../utils/patterns";
 import styles from "./Registration.module.css";
 
+const MIN_NAME_LENGTH = 2;
+const MIN_PASSWORD_LENGTH = 4;
+
 export function Registration() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [passwordCheck, setPasswordCheck] = useState("");
-  const [nameDirty, setNameDirty] = useState(false);
-  const [emailDirty, setEmailDirty] = useState(false);
-  const [passwordDirty, setPasswordDirty] = useState(false);
-  const [passwordCheckDirty, setPasswordCheckDirty] = useState(false);
-  const [nameError, setNameError] = useState("Введите своё имя");
-  const [emailError, setEmailError] = useState("Почта не может быть пустой");
-  const [passwordError, setPasswordError] = useState(
-    "Пароль не может быть пустым"
-  );
-  const [passwordCheckError, setPasswordCheckError] = useState(
-    "Пароль не может быть пустым"
-  );
-  
+  const [textInputs, setTextInputs] = useState({
+    name: "",
+    email: "",
+    password: "",
+    passwordCheck: "",
+  });
+
+  const [textDirty, setTextDirty] = useState({
+    name: false,
+    email: false,
+    password: false,
+    passwordCheck: false,
+  });
+
+  const [textError, setTextError] = useState({
+    name: "Введите своё имя",
+    email: "Почта не может быть пустой",
+    password: "Пароль не может быть пустым",
+    passwordCheck: "Пароль не может быть пустым",
+  });
+
   const [formValid, setFromValid] = useState(false);
 
   useEffect(() => {
-    if (nameError || emailError || passwordError || passwordCheckError) {
+    if (
+      textError.name ||
+      textError.email ||
+      textError.password ||
+      textError.passwordCheck
+    ) {
       setFromValid(false);
     } else {
       setFromValid(true);
     }
-  }, [nameError, emailError, passwordError, passwordCheckError]);
+  }, [
+    textError.name,
+    textError.email,
+    textError.password,
+    textError.passwordCheck,
+  ]);
 
-
-  const MIN_NAME_LENGTH = 2
-  const nameHandler = (e) => {
-    setName(e.target.value);
+  //
+  const handleNameChange = (e) => {
+    setTextInputs({ ...textInputs, [e.target.name]: e.target.value });
+    const validated = namePattern;
     if (e.target.value && e.target.value.length <= MIN_NAME_LENGTH) {
-      setNameError("Имя должно быть длиннее 2х символом");
+      setTextError({
+        ...textError,
+        [e.target.name]: "Имя должно быть длиннее 2х символом",
+      });
+    } else if (!validated.test(e.target.value)) {
+      setTextError({
+        ...textError,
+        [e.target.name]: "Необходима использовать минимум 1 букву",
+      });
     } else if (e.target.value) {
-      setNameError("");
+      setTextError({
+        ...textError,
+        [e.target.name]: "",
+      });
     }
   };
-  const emailHandler = (e) => {
-    setEmail(e.target.value);
+  const handlerEmailChange = (e) => {
+    setTextInputs({ ...textInputs, [e.target.name]: e.target.value });
     const validated = emailPattern;
     if (!validated.test(e.target.value)) {
-      setEmailError("Некорретный емайл");
+      setTextError({
+        ...textError,
+        [e.target.name]: "Некорретный емайл",
+      });
     } else {
-      setEmailError("");
+      setTextError({
+        ...textError,
+        [e.target.name]: "",
+      });
     }
   };
 
-  const MIN_PASSWORD_LENGTH = 4
-  const passwordHandler = (e) => {
-    setPassword(e.target.value);
+  const handlerPasswordChange = (e) => {
+    setTextInputs({ ...textInputs, [e.target.name]: e.target.value });
     if (e.target.value && e.target.value.length <= MIN_PASSWORD_LENGTH) {
-      setPasswordError("Пароль должен быть длиннее 4х символом");
+      setTextError({
+        ...textError,
+        [e.target.name]: "Пароль должен быть длиннее 4х символом",
+      });
     } else if (e.target.value) {
-      setPasswordError("");
+      setTextError({
+        ...textError,
+        [e.target.name]: "",
+      });
     }
   };
   const passwordСheckHandler = (e) => {
-    setPasswordCheck(e.target.value);
-    if (e.target.value != password) {
-      setPasswordCheckError("Пароль не совпадает");
+    setTextInputs({ ...textInputs, [e.target.name]: e.target.value });
+    if (e.target.value != textInputs.password) {
+      setTextError({
+        ...textError,
+        [e.target.name]: "Пароль не совпадает",
+      });
     } else if (e.target.value) {
-      setPasswordCheckError("");
+      setTextError({
+        ...textError,
+        [e.target.name]: "",
+      });
     }
   };
 
-  const blurHandler = (e) => {
+  const handlerBlur = (e) => {
     switch (e.target.name) {
       case "name":
-        setNameDirty(true);
+        setTextDirty({ ...textDirty, [e.target.name]: true });
         break;
       case "email":
-        setEmailDirty(true);
+        setTextDirty({ ...textDirty, [e.target.name]: true });
         break;
       case "password":
-        setPasswordDirty(true);
+        setTextDirty({ ...textDirty, [e.target.name]: true });
         break;
       case "passwordCheck":
-        setPasswordCheckDirty(true);
+        setTextDirty({ ...textDirty, [e.target.name]: true });
+        break;
+      default:
         break;
     }
+  };
+
+  const onFormSubmit = (e) => {
+    e.preventDefault();
+
+    setTextInputs({
+      ...textInputs,
+      name: "",
+      email: "",
+      password: "",
+      passwordCheck: "",
+    });
   };
 
   return (
     <div className="App">
-      <form>
+      <form onSubmit={onFormSubmit}>
         <h1>Registration</h1>
-        {nameDirty && nameError && (
-          <div style={{ color: "red" }}>{nameError}</div>
+        {textDirty.name && textError.name && (
+          <div style={{ color: "red" }}>{textError.name}</div>
         )}
         <input
-          value={name}
-          onChange={(e) => nameHandler(e)}
-          onBlur={(e) => blurHandler(e)}
+          value={textInputs.name}
+          onChange={handleNameChange}
+          onBlur={handlerBlur}
           name="name"
           type="text"
           placeholder="Enter your name"
         />
-        {emailDirty && emailError && (
-          <div style={{ color: "red" }}>{emailError}</div>
+        {textDirty.email && textError.email && (
+          <div style={{ color: "red" }}>{textError.email}</div>
         )}
         <input
-          value={email}
-          onChange={(e) => emailHandler(e)}
-          onBlur={(e) => blurHandler(e)}
+          value={textInputs.email}
+          onChange={handlerEmailChange}
+          onBlur={handlerBlur}
           name="email"
           type="text"
           placeholder="Enter your email"
         />
-        {passwordDirty && passwordError && (
-          <div style={{ color: "red" }}>{passwordError}</div>
+        {textDirty.password && textError.password && (
+          <div style={{ color: "red" }}>{textError.password}</div>
         )}
         <input
-          value={password}
-          onChange={(e) => passwordHandler(e)}
-          onBlur={(e) => blurHandler(e)}
+          value={textInputs.password}
+          onChange={handlerPasswordChange}
+          onBlur={handlerBlur}
           name="password"
           type="password"
           placeholder="Enter your password"
         />
-        {passwordCheckDirty && passwordCheckError && (
-          <div style={{ color: "red" }}>{passwordCheckError}</div>
+        {textDirty.passwordCheck && textError.passwordCheck && (
+          <div style={{ color: "red" }}>{textError.passwordCheck}</div>
         )}
         <input
-          value={passwordCheck}
-          onChange={(e) => passwordСheckHandler(e)}
-          onBlur={(e) => blurHandler(e)}
+          value={textInputs.passwordCheck}
+          onChange={passwordСheckHandler}
+          onBlur={handlerBlur}
           name="passwordCheck"
           type="password"
           placeholder="Repeat your password"
